@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dyzz-echat</title>
+    <script src="lib/axios.min.js"></script>
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/sockjs.min.js"></script>
+    <script src="lib/stomp.min.js"></script>
+    <script src="lib/lodash.min.js"></script>
+    <script src="js/index.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/public.css">
+</head>
+
+<body>
+<header>
+    <div class="ui-menu">
+        <div class="title">easyChat
+            <span>&nbsp<a href="javascript:;" id="logout">退出登录</a></span>
+        </div>
+        <div class="time-date">
+            <div class="time"></div>
+            <div class="date"></div>
+        </div>
+    </div>
+</header>
+<main>
+    <ul class="msg-box">
+    </ul>
+</main>
+<label>
+    <input id="msg-input" type="text" placeholder="enter your message">
+    <button id="send-btn">send</button>
+    <button id="emoji-btn">图床</button>
+</label>
+
+<div class="mask">
+
+</div>
+
+<div class="login-card">
+    <h2>登录</h2>
+    <form>
+        <span>用户名：</span>
+        <label for="username"></label><input type="text" id="username" name="username" required>
+        <span>密码：</span>
+        <label for="password"></label><input type="password" id="password" name="password" required>
+    </form>
+    <div class="go-register-line">没有账号？<a href="./register.html" id="register">去注册</a></div>
+    <button id="login-btn">登录</button>
+</div>
+</body>
+
+</html>

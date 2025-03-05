@@ -1,0 +1,16 @@
+/* 全局样式，去除所有元素的内边距和外边距 */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box; /* 统一使用 border-box 盒模型 */
+}
+
+/* 去除无序列表的默认样式 */
+ul {
+    list-style: none;
+}
+
+body {
+    background: linear-gradient(to bottom, #e9e9e9, #f4f4f4);
+    font-family: Arial, sans-serif; /* 添加字体 */
+}

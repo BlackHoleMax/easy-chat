@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册</title>
+    <link rel="stylesheet" href="css/register.css">
+    <link rel="stylesheet" href="css/public.css">
+    <script src="lib/jquery.min.js"></script>
+    <script src="js/register.js"></script>
+    <script src="js/pattern.js"></script>
+</head>
+
+<body>
+<div class="register-container">
+    <h2>注册</h2>
+    <label for="username"></label>
+    <input type="text" id="username" placeholder="用户名">
+    <label for="password"></label>
+    <input type="password" id="password" placeholder="密码">
+    <label for="invite-code"></label>
+    <input type="text" id="invite-code" placeholder="邀请码">
+    <button onclick="register()">注册</button>
+    <div id="message">
+    </div>
+</div>
+</body>
+
+</html>
