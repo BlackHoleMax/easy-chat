@@ -2,7 +2,6 @@ package devblackholemax.easychattingroom.service.impl;
 
 import devblackholemax.easychattingroom.dao.UserRepository;
 import devblackholemax.easychattingroom.domain.User;
-import devblackholemax.easychattingroom.service.InviteCodeService;
 import devblackholemax.easychattingroom.service.UserService;
 import devblackholemax.easychattingroom.untils.Md5Util;
 import jakarta.annotation.Resource;

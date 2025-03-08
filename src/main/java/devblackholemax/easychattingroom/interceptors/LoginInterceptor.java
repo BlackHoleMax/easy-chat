@@ -1,8 +1,6 @@
 package devblackholemax.easychattingroom.interceptors;
 
-import devblackholemax.easychattingroom.service.UserService;
 import devblackholemax.easychattingroom.untils.JwtUtil;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
