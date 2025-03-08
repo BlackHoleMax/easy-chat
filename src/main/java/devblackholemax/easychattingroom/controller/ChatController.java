@@ -41,15 +41,6 @@ public class ChatController {
         return null;
     }
 
-//    @MessageMapping("/chat/img")
-//    @SendTo("/topic/messages")
-//    public EmojiImageMessage sendImage(@Validated EmojiImageMessage emojiImageMessage) {
-//        if (userService.getUserByName(emojiImageMessage.getSender()) != null) {
-//            return emojiImageMessage;
-//        }
-//        return null;
-//    }
-
     @GetMapping("/web/messages")
     public List<ChatMessage> getMessages() {
         return chatMessageService.getAllMessages();
