@@ -74,17 +74,12 @@
             <artifactId>java-jwt</artifactId>
             <version>3.19.2</version>
         </dependency>
-
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.commons</groupId>-->
-        <!--            <artifactId>commons-lang3</artifactId>-->
-        <!--            <version>3.13.0</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>commons-codec</groupId>-->
-        <!--            <artifactId>commons-codec</artifactId>-->
-        <!--            <version>1.16.0</version>-->
-        <!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.20</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

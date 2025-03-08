@@ -23,7 +23,6 @@ public class EmojiImageServiceImpl implements EmojiImageService {
     public void saveImage(MultipartFile file, String name) throws IOException {
         byte[] imageData = file.getBytes();
 
-        // 检查是否已经存在相同的文件
         Optional<EmojiImage> existingImage = emojiImageRepository.findByNameAndImageData(name, imageData);
         if (existingImage.isPresent()) {
             throw new IllegalArgumentException("相同的文件已经存在");
@@ -40,10 +39,9 @@ public class EmojiImageServiceImpl implements EmojiImageService {
         return emojiImageRepository.findById(id);
     }
 
-
     @Override
     public List<EmojiImage> getAllImages() {
-        Pageable pageable = PageRequest.of(0, 5);
+        Pageable pageable = PageRequest.of(0, 30);
         Page<EmojiImage> emojiImagePage = emojiImageRepository.findAll(pageable);
         return emojiImagePage.getContent();
     }

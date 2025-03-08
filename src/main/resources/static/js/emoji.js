@@ -1,17 +1,13 @@
 window.addEventListener('load', function () {
     // 上传表情图片
     function getRequestOptions() {
-        // 从本地存储中获取 token
         const token = localStorage.getItem('token');
         if (!token) {
             console.error('未找到 token');
             return;
         }
-
-        // 构建包含 Authorization 头部的请求选项
         return {
             headers: {
-                // 修正 Authorization 头部格式
                 'Authorization': `Bearer ${token}`
             }
         }
@@ -25,9 +21,8 @@ window.addEventListener('load', function () {
         const file = fileInput.files[0];
         const name = nameInput.value;
 
-        // 表单校验
         if (!file) {
-            console.error('请选择要上传的表情图片');
+            console.error('请选择要上传的图片');
             return;
         }
 
@@ -38,14 +33,14 @@ window.addEventListener('load', function () {
         }
 
         if (!name || name.trim() === '') {
-            console.error('请输入表情名称');
+            console.error('请输入图片名称');
             return;
         }
 
         const minNameLength = 2;
         const maxNameLength = 10;
         if (name.length < minNameLength || name.length > maxNameLength) {
-            console.error(`表情名称长度应在 ${minNameLength} 到 ${maxNameLength} 个字符之间`);
+            console.error(`图片名称长度应在 ${minNameLength} 到 ${maxNameLength} 个字符之间`);
             return;
         }
 
@@ -64,23 +59,19 @@ window.addEventListener('load', function () {
             console.log(result);
             await getEmojiImages();
 
-            // 清除表单内容
             fileInput.value = '';
             nameInput.value = '';
         } catch (error) {
-            console.error('上传表情图片失败:', error);
+            console.error('上传图片失败:', error);
         }
     });
 
-    // 获取所有表情图片
     async function getEmojiImages() {
         try {
-            // 定义请求头
             const headers = {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`, // 示例请求头，可按需修改
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
             };
 
-            // 创建 Request 对象
             const request = new Request('/emoji-images', {
                 method: 'GET',
                 headers: headers
@@ -91,13 +82,11 @@ window.addEventListener('load', function () {
             const emojiList = document.getElementById('emoji-list');
             emojiList.innerHTML = '';
             images.forEach(image => {
-                // 为单张图片请求创建 Request 对象
-                const imgRequest = new Request(`/emoji-images/${image.id}`, {
+                const imgRequest = new Request(`/emoji-images/compressed/${image.id}`, {
                     method: 'GET',
                     headers: headers
                 });
                 const img = document.createElement('img');
-                // 为 img 元素的 src 属性使用 Blob URL
                 fetch(imgRequest)
                     .then(response => response.blob())
                     .then(blob => {
@@ -106,14 +95,13 @@ window.addEventListener('load', function () {
                         emojiList.appendChild(img);
                     })
                     .catch(error => {
-                        console.error('获取单张表情图片失败:', error);
+                        console.error('获取单张图片失败:', error);
                     });
             });
         } catch (error) {
-            console.error('获取表情图片失败:', error);
+            console.error('获取图片失败:', error);
         }
     }
 
-    // 页面加载时获取所有表情图片
     getEmojiImages();
 });

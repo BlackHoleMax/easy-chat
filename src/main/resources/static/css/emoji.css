@@ -1,59 +1,40 @@
-/* 整体表单样式 */
+#container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#emoji-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+}
+
 #emoji-upload-form {
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 15px;
     width: 300px;
-    margin: 20vh auto 0 auto; /* 水平居中并添加上下外边距 */
-}
-
-/* 文件上传输入框样式 */
-#emoji-file {
-    margin-bottom: 10px;
-    width: 100%;
-}
-
-/* 表情名称标签样式（虽然当前为空标签，但预留样式调整空间） */
-#emoji-upload-form label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-/* 表情名称输入框样式 */
-#emoji-name {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    margin-bottom: 15px;
-}
-
-/* 上传按钮样式 */
-#emoji-upload-form button {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    padding: 10px 15px;
-    cursor: pointer;
-    width: 100%;
-}
-
-#emoji-upload-form button:hover {
-    background-color: #0056b3;
+    margin-bottom: 20px;
 }
 
 #emoji-list {
-    display: flex;
-    flex-wrap: wrap; /* 允许表情图片换行显示 */
-    justify-content: center; /* 水平居中排列表情 */
-    gap: 10px; /* 在表情之间添加间距 */
-    margin-top: 20px;
+    column-count: 3;
+    column-gap: 10px;
+    width: 100%;
 }
 
-#emoji-list img {
-    width: 40px;
-    height: 40px;
-    cursor: pointer; /* 鼠标悬停时显示指针 */
+.emoji-item {
+    break-inside: avoid;
+    margin-bottom: 10px;
+}
+
+.emoji-item img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
