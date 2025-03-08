@@ -21,10 +21,17 @@ public class EmojiImageServiceImpl implements EmojiImageService {
 
     @Override
     public void saveImage(MultipartFile file, String name) throws IOException {
-        byte[] imageBytes = file.getBytes();
+        byte[] imageData = file.getBytes();
+
+        // 检查是否已经存在相同的文件
+        Optional<EmojiImage> existingImage = emojiImageRepository.findByNameAndImageData(name, imageData);
+        if (existingImage.isPresent()) {
+            throw new IllegalArgumentException("相同的文件已经存在");
+        }
+
         EmojiImage emojiImage = new EmojiImage();
         emojiImage.setName(name);
-        emojiImage.setImageData(imageBytes);
+        emojiImage.setImageData(imageData);
         emojiImageRepository.save(emojiImage);
     }
 

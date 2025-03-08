@@ -31,7 +31,6 @@ window.addEventListener('load', function () {
             return;
         }
 
-        // 假设只允许上传图片文件，可根据实际需求修改允许的文件类型
         const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (!allowedTypes.includes(file.type)) {
             console.error('请上传有效的图片文件（JPEG、PNG 或 GIF）');
@@ -43,7 +42,6 @@ window.addEventListener('load', function () {
             return;
         }
 
-        // 可以添加更多关于名称的校验，比如长度限制
         const minNameLength = 2;
         const maxNameLength = 10;
         if (name.length < minNameLength || name.length > maxNameLength) {
@@ -59,13 +57,16 @@ window.addEventListener('load', function () {
             const options = getRequestOptions();
             options.method = 'POST';
             options.body = formData;
-            // 移除手动设置的 Content-Type，让浏览器自动处理
             delete options.headers['Content-Type'];
 
             const response = await fetch('/emoji-images/upload', options);
             const result = await response.text();
             console.log(result);
-            await getEmojiImages()
+            await getEmojiImages();
+
+            // 清除表单内容
+            fileInput.value = '';
+            nameInput.value = '';
         } catch (error) {
             console.error('上传表情图片失败:', error);
         }

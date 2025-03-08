@@ -17,46 +17,10 @@ import jakarta.servlet.ServletException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
-// 简单的限流过滤器
-class RateLimitFilter extends OncePerRequestFilter {
-    private static final int MAX_REQUESTS = 10; // 每分钟最大请求数
-    private static final long TIME_WINDOW = 60 * 1000; // 时间窗口（1分钟）
-    private final ConcurrentHashMap<String, RequestCounter> requestCounters = new ConcurrentHashMap<>();
-
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        String clientIp = request.getRemoteAddr();
-        RequestCounter counter = requestCounters.computeIfAbsent(clientIp, k -> new RequestCounter());
-
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - counter.lastResetTime > TIME_WINDOW) {
-            counter.reset();
-        }
-
-        if (counter.count.incrementAndGet() > MAX_REQUESTS) {
-            response.setStatus(429);
-            response.getWriter().write("Too many requests. Please try again later.");
-            return;
-        }
-
-        filterChain.doFilter(new ContentCachingRequestWrapper(request), response);
-    }
-
-    private static class RequestCounter {
-        final AtomicInteger count = new AtomicInteger(0);
-        long lastResetTime = System.currentTimeMillis();
-
-        void reset() {
-            count.set(0);
-            lastResetTime = System.currentTimeMillis();
-        }
-    }
-}
 
 @RestController
 @RequestMapping("/emoji-images")
@@ -73,10 +37,19 @@ public class EmojiImageController {
         if (name == null || name.isEmpty()) {
             return ResponseEntity.badRequest().body("Name is required");
         }
+        // 文件类型和大小验证
+        if (!Objects.equals(file.getContentType(), MediaType.IMAGE_PNG_VALUE) && !file.getContentType().equals(MediaType.IMAGE_JPEG_VALUE)) {
+            return ResponseEntity.badRequest().body("Only PNG and JPEG images are allowed");
+        }
+        if (file.getSize() > 5 * 1024 * 1024) { // 5MB
+            return ResponseEntity.badRequest().body("File size exceeds limit (5MB)");
+        }
         try {
             emojiImageService.saveImage(file, name);
             return ResponseEntity.ok("Image uploaded successfully");
         } catch (IOException e) {
+            // 记录异常信息
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Error uploading image");
         }
     }
@@ -84,7 +57,7 @@ public class EmojiImageController {
     @GetMapping("/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
         // 输入验证
-        if (id == null) {
+        if (id == null || id <= 0) {
             return ResponseEntity.badRequest().build();
         }
         Optional<EmojiImage> optionalEmojiImage = emojiImageService.getImageById(id);
