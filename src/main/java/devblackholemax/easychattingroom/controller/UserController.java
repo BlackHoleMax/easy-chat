@@ -47,13 +47,13 @@ public class UserController {
             return Result.error("用户名错误");
         }
 
-        if (Md5Util.getMD5String(password).equals(loginUser.getPassword())) {
-            Map<String, Object> claims = new HashMap<>();
-            claims.put("id", loginUser.getId());
-            claims.put("username", loginUser.getUsername());
-            String token = JwtUtil.genToken(claims);
-            return Result.success(token);
+        String encryptedPassword = Md5Util.getMD5String(password);
+        if (!encryptedPassword.equals(loginUser.getPassword())) {
+            return Result.error("密码错误");
         }
-        return Result.error("密码错误");
+
+        String token = JwtUtil.generateToken(loginUser.getId(), loginUser.getUsername());
+
+        return Result.success(token);
     }
 }

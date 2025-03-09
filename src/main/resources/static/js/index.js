@@ -8,14 +8,13 @@ window.addEventListener('load', function () {
     }
 
     $('#login-btn').on('click', _.throttle(function () {
-        login()
+        login().then(res => alert('登录成功'));
     }, 5000));
 
     $('#logout').on('click', logout);
 
     function logout() {
         localStorage.removeItem('token');
-        localStorage.removeItem('username');
         location.reload();
     }
 
@@ -37,7 +36,6 @@ window.addEventListener('load', function () {
             const data = await response.json();
             console.log(data);
             if (data.data) {
-                localStorage.setItem('username', username);
                 localStorage.setItem('token', data.data);
                 console.log(data.message);
                 location.reload()
@@ -76,40 +74,49 @@ window.addEventListener('load', function () {
     const socket = new SockJS('/ws');
     const stompClient = Stomp.over(socket);
 
-    stompClient.connect({}, function (frame) {
+    // 获取 Token 并设置连接头
+    const token = localStorage.getItem('token');
+    const headers = token ? {Authorization: `Bearer ${token}`} : {};
+
+    stompClient.connect(headers, function (frame) {  // [!code ++]
         console.log('Connected: ' + frame);
-        // 订阅消息主题
         stompClient.subscribe('/topic/messages', function (message) {
-            // 处理接收到的消息
+            console.log('收到消息:', message);
             showMessage(JSON.parse(message.body), true);
             scrollToBottom();
         });
     }, function (error) {
         console.error('Stomp 连接失败:', error);
+        if (error.headers.message === '未提供有效的 Token') {
+            alert('请先登录！');
+            localStorage.removeItem('token');
+            location.reload();
+        }
     });
 
     function sendMessage() {
         const messageInput = document.getElementById('msg-input');
         const messageContent = messageInput.value.trim();
+        if (messageContent === '') return;
 
-        if (messageContent === '') {
+        // 检查 Token 是否存在
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('请先登录！');
             return;
         }
 
-        const username = localStorage.getItem('username');
-        const currentDate = new Date();
-        const sendTime = `${currentDate.getFullYear()}/${currentDate.getMonth() + 1}/${currentDate.getDate()} ${getTime()}`;
-
-        const message = {
-            sender: username,
-            content: messageContent,
-            sendTime: sendTime
+        // 构建消息头
+        const headers = {
+            Authorization: `Bearer ${token}`
         };
 
-        // 发送消息到服务器
-        stompClient.send("/app/chat", {}, JSON.stringify(message));
+        stompClient.send(
+            "/app/chat",
+            headers,
+            JSON.stringify({content: messageContent, sendTime: getDate() + ' ' + getTime()})
+        );
 
-        // 清空输入框
         messageInput.value = '';
     }
 
@@ -134,7 +141,6 @@ window.addEventListener('load', function () {
         messageElement.appendChild(contentElement);
         messageElement.appendChild(timeElement);
 
-        console.log("finish")
         if (option === true) {
             messagesDiv.append(messageElement);
         } else {
@@ -182,23 +188,23 @@ window.addEventListener('load', function () {
             });
     }
 
-    function findMessagesById(id) {
-        fetch(`/web/messages/${id}`, getRequestOptions())
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('网络响应失败');
-                }
-                return response.json();
-            })
-            .then(messages => {
-                messages.forEach(message => {
-                    showMessage(message);
-                });
-            })
-            .catch(error => {
-                console.error('根据 ID 获取消息失败:', error);
-            });
-    }
+    // function findMessagesById(id) {
+    //     fetch(`/web/messages/${id}`, getRequestOptions())
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 throw new Error('网络响应失败');
+    //             }
+    //             return response.json();
+    //         })
+    //         .then(messages => {
+    //             messages.forEach(message => {
+    //                 showMessage(message);
+    //             });
+    //         })
+    //         .catch(error => {
+    //             console.error('根据 ID 获取消息失败:', error);
+    //         });
+    // }
 
     function scrollToBottom() {
         const msgBox = $('.msg-box');

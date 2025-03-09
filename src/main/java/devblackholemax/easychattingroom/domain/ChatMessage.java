@@ -16,5 +16,7 @@ public class ChatMessage {
     private Long id;
     private String sender;
     private String content;
+
+    @Column(name = "send_time", columnDefinition = "TEXT")
     private String sendTime;
 }

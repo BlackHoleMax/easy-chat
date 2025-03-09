@@ -2,10 +2,14 @@ package devblackholemax.easychattingroom.controller;
 
 import devblackholemax.easychattingroom.domain.ChatMessage;
 import devblackholemax.easychattingroom.domain.Result;
+import devblackholemax.easychattingroom.domain.User;
 import devblackholemax.easychattingroom.service.ChatMessageService;
 import devblackholemax.easychattingroom.service.UserService;
+import devblackholemax.easychattingroom.untils.JwtUtil;
 import jakarta.annotation.Resource;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +37,26 @@ public class ChatController {
 
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
-    public ChatMessage sendMessage(ChatMessage message) {
-        if (userService.getUserByName(message.getSender()) != null) {
-            chatMessageService.createMessage(message);
-            return message;
+    public ChatMessage sendMessage(
+            @Payload ChatMessage message,
+            @Header(value = "Authorization", required = false) String authHeader
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("未提供有效的 Token");
         }
-        return null;
+
+        String token = authHeader.substring(7);
+        String username = JwtUtil.parseUsername(token);
+
+        User sender = userService.getUserByName(username);
+        if (sender == null) {
+            throw new IllegalArgumentException("用户不存在");
+        }
+
+        message.setSender(username);
+        chatMessageService.createMessage(message);
+
+        return message;
     }
 
     @GetMapping("/web/messages")
