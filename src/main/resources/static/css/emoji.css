@@ -18,7 +18,7 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 20px;
-    width: 300px;
+    width: 100%; /* 改为 100% 以适配不同屏幕 */
     margin-bottom: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
@@ -54,18 +54,22 @@
 }
 
 #emoji-list {
-    column-count: 3;
-    column-gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
     width: 100%;
 }
 
 .emoji-item {
-    break-inside: avoid;
+    flex: 1 0 25%;
     margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
 .emoji-item img {
     width: 100%;
     height: auto;
+    object-fit: contain;
     display: block;
 }
