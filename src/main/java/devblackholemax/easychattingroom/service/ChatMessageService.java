@@ -9,7 +9,5 @@ public interface ChatMessageService {
 
     public List<ChatMessage> getAllMessages();
 
-    public List<ChatMessage> findMessagesById(Long id);
-
     public void clearMessages();
 }

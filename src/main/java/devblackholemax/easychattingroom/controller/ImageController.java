@@ -1,7 +1,7 @@
 package devblackholemax.easychattingroom.controller;
 
-import devblackholemax.easychattingroom.domain.EmojiImage;
-import devblackholemax.easychattingroom.service.impl.EmojiImageServiceImpl;
+import devblackholemax.easychattingroom.domain.Image;
+import devblackholemax.easychattingroom.service.impl.ImageServiceImpl;
 import jakarta.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +22,9 @@ import javax.imageio.ImageIO;
 
 @RestController
 @RequestMapping("/emoji-images")
-public class EmojiImageController {
+public class ImageController {
     @Resource
-    private EmojiImageServiceImpl emojiImageService;
+    private ImageServiceImpl emojiImageService;
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("name") String name) {
@@ -34,8 +34,8 @@ public class EmojiImageController {
         if (name == null || name.isEmpty()) {
             return ResponseEntity.badRequest().body("Name is required");
         }
-        if (!Objects.equals(file.getContentType(), MediaType.IMAGE_PNG_VALUE) && !file.getContentType().equals(MediaType.IMAGE_JPEG_VALUE)) {
-            return ResponseEntity.badRequest().body("Only PNG and JPEG images are allowed");
+        if (!Objects.equals(file.getContentType(), MediaType.IMAGE_PNG_VALUE) && !Objects.equals(file.getContentType(), MediaType.IMAGE_JPEG_VALUE) && !Objects.equals(file.getContentType(), MediaType.IMAGE_GIF_VALUE)) {
+            return ResponseEntity.badRequest().body("Only PNG,JPEG and GIF images are allowed");
         }
         if (file.getSize() > 5 * 1024 * 1024) {
             return ResponseEntity.badRequest().body("File size exceeds limit (5MB)");
@@ -54,10 +54,10 @@ public class EmojiImageController {
         if (id == null || id <= 0) {
             return ResponseEntity.badRequest().build();
         }
-        Optional<EmojiImage> optionalEmojiImage = emojiImageService.getImageById(id);
+        Optional<Image> optionalEmojiImage = emojiImageService.getImageById(id);
         if (optionalEmojiImage.isPresent()) {
-            EmojiImage emojiImage = optionalEmojiImage.get();
-            byte[] imageBytes = emojiImage.getImageData();
+            Image image = optionalEmojiImage.get();
+            byte[] imageBytes = image.getImageData();
             return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageBytes);
         }
         return ResponseEntity.notFound().build();
@@ -68,11 +68,11 @@ public class EmojiImageController {
         if (id == null || id <= 0) {
             return ResponseEntity.badRequest().build();
         }
-        Optional<EmojiImage> optionalEmojiImage = emojiImageService.getImageById(id);
+        Optional<Image> optionalEmojiImage = emojiImageService.getImageById(id);
         if (optionalEmojiImage.isPresent()) {
-            EmojiImage emojiImage = optionalEmojiImage.get();
+            Image image = optionalEmojiImage.get();
             try {
-                BufferedImage bufferedImage = Thumbnails.of(new ByteArrayInputStream(emojiImage.getImageData()))
+                BufferedImage bufferedImage = Thumbnails.of(new ByteArrayInputStream(image.getImageData()))
                         .size(100, 100)
                         .outputFormat("jpg")
                         .asBufferedImage();
@@ -91,7 +91,7 @@ public class EmojiImageController {
     }
 
     @GetMapping
-    public List<EmojiImage> getAllImages() {
+    public List<Image> getAllImages() {
         return emojiImageService.getAllImages();
     }
 }

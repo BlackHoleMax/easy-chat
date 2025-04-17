@@ -23,8 +23,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     @Bean
-    public MyWebSocketHandler myHandler() {
-        return new MyWebSocketHandler();
+    public WebSocketHandler myHandler() {
+        return new WebSocketHandler();
     }
 
     @Bean

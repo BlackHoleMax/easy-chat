@@ -3,6 +3,8 @@ package devblackholemax.easychattingroom.controller;
 import devblackholemax.easychattingroom.domain.InviteCode;
 import devblackholemax.easychattingroom.domain.Result;
 import devblackholemax.easychattingroom.domain.User;
+import devblackholemax.easychattingroom.dto.LoginRequest;
+import devblackholemax.easychattingroom.dto.RegisterRequest;
 import devblackholemax.easychattingroom.service.InviteCodeService;
 import devblackholemax.easychattingroom.service.UserService;
 import devblackholemax.easychattingroom.untils.JwtUtil;
@@ -29,11 +31,14 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public Result register(String username, String password, String code) {
-        User user = userService.getUserByName(username);
-        InviteCode inviteCode = inviteCodeService.getInviteCodeByCode(code);
+    public Result register(@RequestBody RegisterRequest registerRequest) {
+        if (registerRequest == null) {
+            return Result.error("未能收到任何数据");
+        }
+        User user = userService.getUserByName(registerRequest.getUsername());
+        InviteCode inviteCode = inviteCodeService.getInviteCodeByCode(registerRequest.getInviteCode());
         if (user == null && inviteCode != null) {
-            userService.register(username, password);
+            userService.register(registerRequest.getUsername(), registerRequest.getPassword());
             return Result.success();
         } else {
             return Result.error("用户名已被占用");
@@ -41,13 +46,16 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Result login(String username, String password) {
-        User loginUser = userService.getUserByName(username);
+    public Result login(@RequestBody LoginRequest loginRequest) {
+        if (loginRequest == null) {
+            return Result.error("未能收到任何数据");
+        }
+        User loginUser = userService.getUserByName(loginRequest.getUsername());
         if (loginUser == null) {
             return Result.error("用户名错误");
         }
 
-        String encryptedPassword = Md5Util.getMD5String(password);
+        String encryptedPassword = Md5Util.getMD5String(loginRequest.getPassword());
         if (!encryptedPassword.equals(loginUser.getPassword())) {
             return Result.error("密码错误");
         }

@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class EmojiImage {
+public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

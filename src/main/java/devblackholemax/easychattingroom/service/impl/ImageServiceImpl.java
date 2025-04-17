@@ -10,40 +10,40 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import devblackholemax.easychattingroom.dao.EmojiImageRepository;
-import devblackholemax.easychattingroom.domain.EmojiImage;
-import devblackholemax.easychattingroom.service.EmojiImageService;
+import devblackholemax.easychattingroom.dao.ImageRepository;
+import devblackholemax.easychattingroom.domain.Image;
+import devblackholemax.easychattingroom.service.ImageService;
 import jakarta.annotation.Resource;
 
 @Service
-public class EmojiImageServiceImpl implements EmojiImageService {
+public class ImageServiceImpl implements ImageService {
     @Resource
-    EmojiImageRepository emojiImageRepository;
+    ImageRepository imageRepository;
 
     @Override
     public void saveImage(MultipartFile file, String name) throws IOException {
         byte[] imageData = file.getBytes();
 
-        Optional<EmojiImage> existingImage = emojiImageRepository.findByNameAndImageData(name, imageData);
+        Optional<Image> existingImage = imageRepository.findByNameAndImageData(name, imageData);
         if (existingImage.isPresent()) {
             throw new IllegalArgumentException("相同的文件已经存在");
         }
 
-        EmojiImage emojiImage = new EmojiImage();
-        emojiImage.setName(name);
-        emojiImage.setImageData(imageData);
-        emojiImageRepository.save(emojiImage);
+        Image image = new Image();
+        image.setName(name);
+        image.setImageData(imageData);
+        imageRepository.save(image);
     }
 
     @Override
-    public Optional<EmojiImage> getImageById(Long id) {
-        return emojiImageRepository.findById(id);
+    public Optional<Image> getImageById(Long id) {
+        return imageRepository.findById(id);
     }
 
     @Override
-    public List<EmojiImage> getAllImages() {
+    public List<Image> getAllImages() {
         Pageable pageable = PageRequest.of(0, 30);
-        Page<EmojiImage> emojiImagePage = emojiImageRepository.findAll(pageable);
+        Page<Image> emojiImagePage = imageRepository.findAll(pageable);
         return emojiImagePage.getContent();
     }
 }

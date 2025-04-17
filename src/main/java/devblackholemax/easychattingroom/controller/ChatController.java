@@ -55,18 +55,12 @@ public class ChatController {
 
         message.setSender(username);
         chatMessageService.createMessage(message);
-
         return message;
     }
 
     @GetMapping("/web/messages")
     public List<ChatMessage> getMessages() {
         return chatMessageService.getAllMessages();
-    }
-
-    @GetMapping("/web/messages/{id}")
-    public List<ChatMessage> findMessagesById(@PathVariable Long id) {
-        return chatMessageService.findMessagesById(id);
     }
 
     @GetMapping("/web/messages/clear")

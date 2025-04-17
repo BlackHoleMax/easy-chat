@@ -26,11 +26,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    public List<ChatMessage> findMessagesById(Long id) {
-        return chatMessageRepository.findAllById(Collections.singleton(id));
-    }
-
-    @Override
     public void clearMessages() {
         chatMessageRepository.deleteAll();
     }
