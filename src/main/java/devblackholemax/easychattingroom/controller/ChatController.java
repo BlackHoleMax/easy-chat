@@ -25,16 +25,6 @@ public class ChatController {
     @Resource
     UserService userService;
 
-    @GetMapping("/index")
-    public String index() {
-        return "static/index.html";
-    }
-
-    @GetMapping("/register")
-    public String register() {
-        return "static/register.html";
-    }
-
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public ChatMessage sendMessage(
